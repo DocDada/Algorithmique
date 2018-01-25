@@ -7,11 +7,19 @@ os.system('clear')
 
 #TP - Listes chainées
 
-l = constructionClavier()
-affichageIteratif(l)
+LC = 1
 
-#Question 0
 
+if (LC!=3):
+    l = constructionClavier()
+    affichageIteratif(l)
+
+
+        ############
+        #Question 0#
+        ############
+
+# marche -a
 def longueurListeIterative(l):
     """renvoie la longueur d'une liste chainée (iterative) """
     compteur = 0
@@ -20,7 +28,9 @@ def longueurListeIterative(l):
         compteur += 1
         courant = courant.suivant
     return compteur
-#print "Question 0 : (itératif) ", longueurListeIterative(l)
+
+if (LC==1):
+    print "Question 0 : (itératif) ", longueurListeIterative(l)
 
 def longueurListeRecursive_p(l):
     """fait appel à la fonction auxiliaire"""
@@ -29,51 +39,54 @@ def longueurListeRecursive_p(l):
     else:
         return 0
 
-m = l.premier
 def longueurListeRecursive(m):
     """renvoie la longueur d'une liste chainée (recursive) """
     if m:
         return 1 + longueurListeRecursive(m.suivant)
     else:
         return 0
-#print "Question 0 : (récursif) ", longueurListeRecursive_p(l)
+
+if (LC==1):
+    print "Question 0 : (récursif) ", longueurListeRecursive_p(l)
 
 #Question 1
 
 
 
-#Question 2
+
+
+
+        ############
+        #Question 2#
+        ############
 
 def recherche_It(l, k):
     """renvoit la valeur de l'élément qui est dans la k-ième case d'une liste
     EXCEPTION : la liste peut avoir moins de k éléments"""
     compteur = 0
     courant = l.premier
+    if courant == None:
+        raise Exception("La liste est vide.")
     while compteur != k :
         if courant == None:
             raise Exception("La position saisie est trop grande")
+            return
         courant = courant.suivant
         compteur += 1
     return courant.valeur
-#print "Question 2 : (itératif) ", recherche_It(l, 1)
 
-#Correction question 2 (itératif)
-"""def valeur_It(l, k):
-    courant = l.premier
-    for i in range(k):
-        if courant.suivant == None:
-            raise Exception("AAAAAAAAAAAAAAAAAAAAAAAAAA")
-        else:
-            courant = courant.suivant
-    return courant.valeur
-print "Correction question 2 : (itératif)", valeur_It(l, 1)"""
+entier = 0
+if (LC==1):
+    print "Question 2 : (itératif) ", recherche_It(l, entier)
+
+
 
 def recherche_Re_p(l, k):
     """appel un maillon si non vide"""
     if l.premier and k>=0 :
         return recherche_Re(l.premier, k)
     else:
-        return "Position saisie trop grande"
+        return "La position saisie est trop grande."
 
 def recherche_Re(m, k):
     """renvoit la valeur de l'élément qui est dans la k-ième case d'une liste
@@ -81,10 +94,14 @@ def recherche_Re(m, k):
     if k == 0:
         return m.valeur
     elif m.suivant == None :
-        raise Exception("La position saisie est trop grande")
+        raise Exception("La position saisie est trop grande.")
     else:
-        return recherche_Re(m.suivant, k - 1)
-#print "Question 2 : (récursif) ", recherche_Re_p(l, 1)
+        return recherche_Re(m.suivant, k-1)
+
+if (LC==1):
+    print "Question 2 : (récursif) ", recherche_Re_p(l, entier)
+
+
 
 #Correction question 2 (récursif)
 
@@ -93,7 +110,7 @@ def valeur_rec(l, k):
     if l.premier:
         return valeur_rec_M(l.premier, k)
     else:
-        raise Exception("liste vide")
+        raise Exception("La liste est vide.")
 
 def valeur_rec_M(m, k):
     """renvoie la valeur du kième élément après m (k=0 donne la valeur de m)
@@ -104,11 +121,19 @@ def valeur_rec_M(m, k):
         if m.suivant:
             return valeur_rec_M(m, k-1)
         else:
-            raise Exception("liste trop courte")
-#print "Correction question 2 : (récursif) ", valeur_rec(l, 1)
+            raise Exception("La liste est trop courte.")
+
+if (LC==1):
+    print "Correction question 2 : (récursif) ", valeur_rec(l, entier)
 
 
-#Question 3
+
+
+
+
+        ############
+        #Question 3#
+        ############
 
 def rechercheElementDistinctIteratif(l, k):
     #marche?
@@ -127,7 +152,9 @@ def rechercheElementDistinctIteratif(l, k):
         courantSuiv = courant.suivant
         compteur += 1
     return courant.valeur
-#print "Question 3 : (itératif) ", rechercheElementDistinctIteratif(l, 1)
+
+if (LC==1):
+    print "Question 3 : (itératif) ", rechercheElementDistinctIteratif(l, 1)
 
 
 # identique à la correction
@@ -137,7 +164,7 @@ def recherche_element_distinct_Re_p(l, k):
     if l.premier and k>=1 :# k>=0 pour une liste qui commence à 0
         return recherche_element_distinct_Re(l.premier, k)
     else:
-        raise Exception("La liste est vide")
+        raise Exception("La liste est vide.")
 
 def recherche_element_distinct_Re(m, k):
     """fonction auxiliaire"""
@@ -150,8 +177,10 @@ def recherche_element_distinct_Re(m, k):
         else:
             return recherche_element_distinct_Re(courant, k-1)
     else:
-        raise Exception("La valeur saisie est trop grande !")
-#print "Question 3 : (récursif) ", recherche_element_distinct_Re_p(l, 1)
+        raise Exception("La valeur saisie est trop grande.")
+
+if (LC==1):
+    print "Question 3 : (récursif) ", recherche_element_distinct_Re_p(l, 1)
 
 
 
@@ -162,10 +191,10 @@ def kiemedistinct_it(maliste, k):
     """fonction qui renvoi la kième valeur différente
     qui est dans la liste chaînée maliste"""
     if not maliste.premier:
-        raise Exception("Liste trop courte")
+        raise Exception("La liste est trop courte.")
 
     courant = maliste.premier
-    compteur = 1# la liste part de 1 !!!!
+    compteur = 1# la liste part de 1 !
 
     while courant.suivant and compteur < k:
         if courant.valeur < courant.suivant.valeur:
@@ -173,15 +202,20 @@ def kiemedistinct_it(maliste, k):
     if compteur == k:
         return courant.valeur
     else:
-        raise Exception("Liste trop courte")
+        raise Exception("La liste est trop courte.")
         courant = courant.suivant
 
-#print "Correction question 3 : (itératif) ", kiemedistinct_it(l, 1)
+if (LC==1):
+    print "Correction question 3 : (itératif) ", kiemedistinct_it(l, 1)
 
 
 
 
-#Question 4
+
+        ############
+        #Question 4#
+        ############
+
 
 def xElementDeLaListe_It(l, x):
     """renvoit True si l'élément x est dans la liste l (version itérative) """
@@ -192,7 +226,8 @@ def xElementDeLaListe_It(l, x):
         courant=courant.suivant
     return False# l'élément x n'est pas dans la liste
 
-#print "Question 4 : (itératif) ", xElementDeLaListe_It(l, 1)
+if (LC==1):
+    print "Question 4 : (itératif) ", xElementDeLaListe_It(l, 1)
 
 def xElementDeLaListe_Re_p(l, x):
     """renvoit True si l'élément x est dans la liste l (version récursive) """
@@ -209,7 +244,9 @@ def xElementDeLaListe_Re(m, x):
         return xElementDeLaListe_Re(m.suivant, x)
     else:
         return False
-#print "Question 4 : (récursif) ", xElementDeLaListe_Re_p(l, 1)
+
+if (LC==1):
+    print "Question 4 : (récursif) ", xElementDeLaListe_Re_p(l, 1)
 
 
 
@@ -231,7 +268,9 @@ def xElementListeTriee_It(l, x):
            return True
         courant = courant.suivant
     return False
-#print "Question 5 : (itératif) ", xElementListeTriee_It(l, 1)
+
+if (LC==1):
+    print "Question 5 : (itératif) ", xElementListeTriee_It(l, 1)
 
 def xElementListeTriee_Re_p(l, x):
     """regarde si la liste l est vide, si non recherche de x dans liste"""
@@ -251,7 +290,9 @@ def xElementListeTriee_Re(m, x):
         xElementListeTriee_Re(m.suivant, x)
     else:
         return False
-#print "Question 5 : (récursif) ", xElementListeTriee_Re_p(l, 1)
+
+if (LC==1):
+    print "Question 5 : (récursif) ", xElementListeTriee_Re_p(l, 1)
 
 
 
@@ -275,7 +316,9 @@ def nbrElementDistinct_It(l):
                 courantSuiv=courantSuiv.suivant
             courant=courantSuiv
     return compteur
-#print "Question 6 : (itératif) ", nbrElementDistinct_It(l)
+
+if (LC==1):
+    print "Question 6 : (itératif) ", nbrElementDistinct_It(l)
 
 
 #Correction question 6 (versions itérative et récursive)
@@ -304,7 +347,9 @@ def nbrElementDistinct_Re(m):
             return 1+nbrElementDistinct_Re(m.suivant)
     else:
         return 1
-#print "Question 6 : (récursif) ", nbrElementDistinct_Re_p(l)
+
+if (LC==1):
+    print "Question 6 : (récursif) ", nbrElementDistinct_Re_p(l)
 
 
 
@@ -333,9 +378,11 @@ def copie_it(l):
                 val_precedente = courant_lecture.suivant
                 courant_lecture = courant_lecture.suivant
     return copie
-print "Question 7 : (itératif) "
-#copie = copie_it(l)
-#affichageIteratif(copie)
+
+if (LC==1):
+    print "Question 7 : (itératif) "
+    copie = copie_it(l)
+    affichageIteratif(copie)
 
 
 
@@ -358,9 +405,11 @@ def copie_re(m):
             return copie_re(m.suivant)
     else:
         return Maillon(m.valeur, None)
-print "Question 7 : (récursif) "
-#copie2 = copie_re_p(l)
-#affichageIteratif(copie)
+
+if (LC==1):
+    print "Question 7 : (récursif) "
+    copie2 = copie_re_p(l)
+    affichageIteratif(copie)
 
 #Correction question 7
 
@@ -383,9 +432,11 @@ def copie_rec_M(m):
         return nouveau
     else:
         return Maillon(m.valeur, None)
-print "Correction question 7 : (récursif) "
-#copie = copie_rec(l)
-#affichageIteratif(copie)
+
+if (LC==1):
+    print "Correction question 7 : (récursif) "
+    copie = copie_rec(l)
+    affichageIteratif(copie)
 
 
 
@@ -408,8 +459,10 @@ def supprRepetitions_It(l):
             break
         courant = courant.suivant
     affichageIteratif(l)
-print "Question 8 : (itératif) "
-#supprRepetitions_It(l)
+
+if (LC==1):
+    print "Question 8 : (itératif) "
+    supprRepetitions_It(l)
 
 # marche
 # propre
@@ -429,8 +482,10 @@ def supprRepetitions_re(val, m):
         m.suivant = supprRepetitions_re(val, m.suivant)
     elif m == None or m.valeur != val:# else
         return m
-print "Question 8 : (récursif) "
-#supprRepetitions_re_l(l)
+
+if (LC==1):
+    print "Question 8 : (récursif) "
+    supprRepetitions_re_l(l)
 
 
 
@@ -449,9 +504,10 @@ def rangerEntier_it(l, entier):
         courant.suivant = Maillon(entier, courant.suivant)
     affichageIteratif(l)
 
-entier = 5
-print "Question 9 : (iteratif) | insertion de", entier
-rangerEntier_it(l, entier)
+if (LC==1):
+    entier = 5
+    print "Question 9 : (iteratif) | insertion de", entier
+    rangerEntier_it(l, entier)
 
 def rangerEntier_re_l(l, entier):
     """range un entier dans une liste triée (version recursive)"""
@@ -470,9 +526,10 @@ def rangerEntier_re(m, entier):
     else:
         m.suivant = Maillon(entier, m.suivant)
 
-entier = 2
-print "Question 9 : (récursif) | insertion de", entier
-rangerEntier_re_l(l, entier)
+if (LC==1):
+    entier = 2
+    print "Question 9 : (récursif) | insertion de", entier
+    rangerEntier_re_l(l, entier)
 
 
 
@@ -492,8 +549,10 @@ def inverseElement_it(l):
         cour.valeur, cour.suivant.valeur = cour.suivant.valeur, cour.valeur
         cour = cour.suivant.suivant
     affichageIteratif(l)
-print "Question 10 : (itératif) "
-inverseElement_it(l)
+
+if (LC==2):
+    print "Question 10 : (itératif) "
+    inverseElement_it(l)
 
 
 def inverseElement_re_l(l):
@@ -509,8 +568,9 @@ def inverseElement_re(m):
         m.valeur, m.suivant.valeur = m.suivant.valeur, m.valeur
         inverseElement_re(m.suivant.suivant)
 
-print "Question 10 : (récursif) "
-inverseElement_re_l(l)
+if (LC==2):
+    print "Question 10 : (récursif) "
+    inverseElement_re_l(l)
 
 
 
@@ -535,9 +595,10 @@ def supprPremiereOccurence_it(l, entier):
             courant = courant.suivant
     affichageIteratif(l)
 
-entier = 1
-print "Question 11 : (itératif) | on enleve la premiere occurence de", entier
-#supprPremiereOccurence_it(l, entier)
+if (LC==2):
+    entier = 1
+    print "Question 11 : (itératif) | on enleve la premiere occurence de", entier
+    supprPremiereOccurence_it(l, entier)
 
 def supprPremiereOccurence_re_l(l, entier):
     """supprime la premiere occurence d'un entier
@@ -559,9 +620,10 @@ def supprPremiereOccurence_re(m, entier):
     else:
         supprPremiereOccurence_re(m.suivant, entier)
 
-entier = 1
-print "Question 11 : (récursif) | on enleve la premiere occurence de", entier
-#supprPremiereOccurence_re_l(l, entier)
+if (LC==2):
+    entier = 1
+    print "Question 11 : (récursif) | on enleve la premiere occurence de", entier
+    supprPremiereOccurence_re_l(l, entier)
 
 
 
@@ -587,9 +649,10 @@ def delFirstOcc_triee_it(l, entier):
             courant.suivant = courant.suivant.suivant
     affichageIteratif(l)
 
-entier = 2
-print "Question 12 : (itérative) | on enleve la premiere occurence de", entier
-delFirstOcc_triee_it(l, entier)
+if (LC==2):
+    entier = 2
+    print "Question 12 : (itérative) | on enleve la premiere occurence de", entier
+    delFirstOcc_triee_it(l, entier)
 
 
 def delFirstOcc_triee_re_l(l, entier):
@@ -613,9 +676,10 @@ def delFirstOcc_triee_re(m, entier):
     else:
         delFirstOcc_triee_re(m.suivant, entier)
 
-entier = 7
-print "Question 12 : (récursif) | on enleve la premiere occurence de", entier
-delFirstOcc_triee_re_l(l, entier)
+if (LC==2):
+    entier = 7
+    print "Question 12 : (récursif) | on enleve la premiere occurence de", entier
+    delFirstOcc_triee_re_l(l, entier)
 
 
 
@@ -665,21 +729,23 @@ def fusionCroissante_it(l1, l2):
     affichageIteratif(l)
     return l
 
-l1 = constructionClavier()
-l2 = constructionClavier()
-print "Question 13 : (itératif) "
-#l = fusionCroissante_it(l1, l2)
+if (LC==2):
+    l1 = constructionClavier()
+    l2 = constructionClavier()
+    print "Question 13 : (itératif) "
+    l = fusionCroissante_it(l1, l2)
 
 
 def fusionCroissante_re_l(l1, l2):
     """réalise la fusion croissante de 2 listes
     création d'une 3me liste (version itérative)"""
+    l = ListeChainee(None)
     if l1.premier and l2.premier:
         if int(l2.premier.valeur) > int(l1.premier.valeur):
             l.premier = Maillon(l1.premier.valeur,fusionCroissante_re(l1.premier.suivant, l2.premier))
         else:
             l.premier = Maillon(l2.premier.valeur,fusionCroissante_re(l1.premier, l2.premier.suivant))
-        return l
+    return l
 
 def fusionCroissante_re(m1, m2):
     if m1 and m2:
@@ -698,9 +764,10 @@ def fusionCroissante_re(m1, m2):
         else:
             return Maillon(m2.valeur,None)
 
-print "Question 13 : (récrusif) "
-l = fusionCroissante_re_l(l1, l2)
-affichageIteratif(l)
+if (LC==2):
+    print "Question 13 : (récrusif) "
+    l = fusionCroissante_re_l(l1, l2)
+    affichageIteratif(l)
 
 
 
@@ -715,7 +782,7 @@ affichageIteratif(l)
 def suppr1sur2_it(l):
     """supprime un élément sur deux d'une
     liste chaînée, commence par le 1er
-    (version (itérative)"""
+    (version itérative)"""
     if l.premier:
         l.premier = l.premier.suivant
         courant = l.premier
@@ -725,14 +792,15 @@ def suppr1sur2_it(l):
             courant = courant.suivant
     affichageIteratif(l)
 
-print "Question 14 : (itératif) "
-suppr1sur2_it(l)
+if (LC==2):
+    print "Question 14 : (itératif) "
+    suppr1sur2_it(l)
 
 
 def suppr1sur2_re_l(l):
     """supprime un élément sur deux d'une
     liste chaînée, commence par le 1er
-    (version (récursive)"""
+    (version récursive)"""
     if l.premier:
         l.premier = l.premier.suivant
         suppr1sur2_re(l.premier)
@@ -746,8 +814,9 @@ def suppr1sur2_re(m):
     else:
         return
 
-print "Question 14 : (récursif) "
-suppr1sur2_re_l(l)
+if (LC==2):
+    print "Question 14 : (récursif) "
+    suppr1sur2_re_l(l)
 
 
 
@@ -756,6 +825,53 @@ suppr1sur2_re_l(l)
         #Question 15#
         #############
 
+if (LC == 3):
+    ldc1 = constructionClavierLDC()
+
+# marche (2)
+def concatLDC(ldc1, ldc2):
+    """concatène deux listes doublement chainées
+    ldc2 à ldc1"""
+    courant = ldc2.premier
+    if ldc1.premier == None:
+        ldc1 = ldc2
+    elif ldc2.premier:
+        if ldc1.premier.suivant == None:
+            ldc2.premier.precedent = ldc1.premier
+            ldc1.premier.suivant = ldc2.premier
+        else:
+            """ldc1.dernier.suivant = ldc2.premier
+            ldc1.dernier.suivant.precedent = ldc1.dernier
+            ldc1.dernier = ldc2.dernier"""
+            # ces 3 dernières lignes et les 3 suivantes sont
+            # strictement les mêmes
+            ldc1.dernier.suivant = ldc2.premier
+            ldc2.premier.precedent = ldc1.dernier
+            ldc1.dernier = ldc2.dernier
+    affichageIteratifLDC(ldc1)
+    return ldc1
+
+if (LC==3):
+    print "Question 15 : "
+    ldc2 = constructionClavierLDC()
+    ldc1 = concatLDC(ldc1, ldc2)
+
+
+
+
+def correcConcatLDC(ldc1, ldc2):
+    if ldc1.dernier and ldc2.premier:
+        ldc1.dernier.suivant = ldc2.premier
+        ldc2.premier.precedent = ldc1.dernier
+        ldc1.dernier = ldc2.dernier
+    elif ldc2.premier:
+        ldc1.premier = ldc2.premier
+        ldc1.dernier = ldc2.dernier
+    affichageIteratifLDC(ldc1)
+    return ldc1
+if LC == 3:
+    print "Correction question 15 : "
+    ldc1 = correcConcatLDC(ldc1, ldc2)
 
 
 
@@ -767,6 +883,95 @@ suppr1sur2_re_l(l)
 
 
 
+        #############
+        #Question 16#
+        #############
+
+
+def inversSuivPrec(ldc):
+    """inverse le suivant et le précédent d'une
+    ldc"""
+    cour = ldc.premier# tres important de le placer ici !
+    ldc.dernier, ldc.premier = ldc.premier, ldc.dernier
+    while cour:
+        cour.precedent, cour.suivant = cour.suivant, cour.precedent
+        cour = cour.precedent
+    affichageIteratifLDC(ldc)
+    return ldc
+
+if LC == 3:
+    print "Question 16 : "
+    ldc1 = inversSuivPrec(ldc1)
+
+
+
+
+
+
+        #############
+        #Question 17#
+        #############
+
+
+def palindromeLDC(ldc):
+    """vérifie si une ldc est un palindrome
+    une liste vide est un palindrome"""
+    courant1 = ldc.premier
+    courant2 = ldc.dernier
+    while courant1 != courant2:
+        if courant1.valeur != courant2.valeur:
+            return False
+        courant1 = courant1.suivant
+        courant2 = courant2.precedent
+    return True
+
+if LC == 3:
+    print "Question 17 : ", palindromeLDC(ldc1)
+
+
+
+
+        #############
+        #Question 18#
+        #############
+
+
+# marche (tous)
+def insertionLDC_debut(ldc, val):
+    """insere au debut d'une ldc un maillon"""
+    ldc.premier = MaillonDouble(val, ldc.premier, None)
+    affichageIteratifLDC(ldc)
+    return ldc
+
+if LC == 3:
+    val = 'D'
+    print "Question 18 : insertion d'un maillon au debut d'une liste"
+    ldc1 = insertionLDC_debut(ldc1, val)
+
+
+
+def insertionLDC_fin(ldc, val):
+    """insere en fin d'une ldc un maillon"""
+    ldc.dernier.suivant = MaillonDouble(val, None, ldc.dernier)
+    ldc.dernier = ldc.dernier.suivant
+    affichageIteratifLDC(ldc)
+    return ldc
+
+if LC == 3:
+    val = 'F'
+    print "Question 18 : insertion d'un maillon en fin d'une liste"
+    ldc1 = insertionLDC_fin(ldc1, val)
+
+
+def supprPremMaillLDC(ldc):
+    """supprime le premier maillon d'une ldc"""
+    ldc.premier = ldc.premier.suivant
+    affichageIteratifLDC(ldc)
+    return ldc
+
+if LC == 3:
+    print "Question 18 : suppression du premier maillon"
+    ldc1 = supprPremMaillLDC(ldc1)
 
 
 
