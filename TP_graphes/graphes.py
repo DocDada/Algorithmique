@@ -18,27 +18,76 @@ class GrapheNO:
 
     def affiche(self):
         """affiche le graphe"""
-        print "Ordre du graphe : ", self.ordre
+        #print "Ordre du graphe : ", self.ordre
+        print ("Ordre du graphe : ", self.ordre)
         for i in self.adj:
-            print i
+            #print i
+            print (i)
 
     def degre(self, somm):
         """nombre de voisins du sommet somm"""
-        return len(self.adj[somm])
+        if (somm<len(self.adj)):
+            return len(self.adj[somm])
+        return "Le sommet n'existe pas pour ce graphe"
 
     def taille(self):
         """renvoie nombre d'aretes du graphe"""
         nb = 0# nombre d'aretes
         for i in self.adj:
             nb = nb + len(i)
-        return nb/2
+        return int(nb/2)
 
     def degreMax(self):
-        """renvoie degre max d'un graphe"""
+        """renvoie degre/voisins max d'un graphe"""
         return max(max(i) for i in self.adj)
 
+    def nombreTriangle(self):
+        """renvoie nombre de triangle dans un grapheNO"""
+        nb = 0# nombre de triangles
+        sommet = 0
+        for i in range(len(self.adj)-1):
+            if self.degre(i)>=2:# gere exception
+                sommet = i
+                for j in self.adj[i+1]:
+                    if j==sommet:
+                        nb += 1
+        if nb>0:#gere exception
+            return nb-1
+        return 0
+
+    # correction
+    def nomb(self):
+        n = 0
+        for i in range(len(self.adj)):
+            for j in self.adj[i]:
+                for k in self.adj[j]:
+                    if k in self.adj[i]:
+                        n += 1
+        return int(n/6)
+
+    def ajoutSommet(self, sommet):
+        """ajoute un sommet n au graphe
+        ancien ordre : n ; nouvel ordre : n+1"""
+        for i in sommet:
+            if i<self.ordre:# gere exception
+                self.adj[i].append(self.ordre)
+        self.adj.append(sommet)
+
+    def supprSommet(self, s):
+        """supprime un sommet d'un graphe"""
+        longueur = self.ordre
+        for i in self.adj:
+            for j in range(len(i)):
+                if i[j]>s:# renumerote les sommets
+                    i[j] = i[j] - 1
+                elif i[j]==s:# supprime aretes liees à s
+                    del i[j]
+        del self.adj[s]
+
+
+
 def grapheComplet(n):
-    """renvoie grapheNo à n sommet"""
+    """renvoie grapheNo complet à n sommet"""
     liste=[[]*n for i in range(n)]
     for i in range(len(liste)):
         for j in range(n):
@@ -74,7 +123,8 @@ def aretes_vers_liste_adj(n, li_a):
 def lireAretesEtOrdre(nomdufichier):
     """lit le fichier et renvoie la liste des aretes qui s'y trouvent
     ainsi que l'ordre"""
-    f = file(nomdufichier, 'r')# ouverture du fichier
+    #f = file(nomdufichier, 'r')# ouverture du fichier
+    f = open(nomdufichier, 'r')
     lignes = f.readlines()
     #on extrait les lignes qui commencent par 'E'
     #si c'est bon on cree une nouvelle arete
@@ -95,6 +145,7 @@ def lireGrapheNO(nomdufichier):
     return aretes_vers_liste_adj(ordreArete(arete), arete)
 
 
+
 #      #
 # MAIN #
 #      #
@@ -104,8 +155,10 @@ def lireGrapheNO(nomdufichier):
 liste = [[2,4],[2,3,4],[0,1,3,4],[1,2],[0,1,2]]
 graphe = GrapheNO(liste)
 graphe.affiche()
-print graphe.degre(0)
-print graphe.taille()
+grapheVide = GrapheNO([[]])
+print ("Nombre de voisins : ",graphe.degre(0))
+print ("Nombre de voisins d'un grpahe vide : ", grapheVide.degre(1))
+print ("Nombre d'arêtes", graphe.taille())
 graphe2 = grapheComplet(4)
 graphe2.affiche()
 
@@ -116,5 +169,15 @@ arete = [[0,2],[0,4],[1,2],[1,3],[1,4],[2,3],[2,4]]
 graphe4 = aretes_vers_liste_adj(ordreArete(arete), arete)
 graphe4.affiche()
 
-graphe5 = lireGrapheNO("metro.txt")
-graphe5.affiche()
+#graphe5 = lireGrapheNO("metro.txt")
+#graphe5.affiche()
+
+listeTriangles2 = [[2,1], [0,2,3], [0,1, 3], [1,2]]
+listeTriangles1 = [[1,2], [0], [0]]
+grapheTriangle = GrapheNO(listeTriangles1)
+print ("Nombre de triangle", grapheVide.nombreTriangle())
+print ("Nombre de triangle", grapheTriangle.nomb())
+grapheTriangle.ajoutSommet([2])
+grapheTriangle.affiche()
+grapheTriangle.supprSommet(3)
+grapheTriangle.affiche()
