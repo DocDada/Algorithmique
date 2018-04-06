@@ -1,5 +1,5 @@
 #coding:utf-8
-
+import os
         #######################
         #                     #
         #    TP1 - GRAPHES    #
@@ -26,7 +26,7 @@ class GrapheNO:
 
     def degre(self, somm):
         """nombre de voisins du sommet somm"""
-        if (somm<len(self.adj)):
+        if (somm<len(self.adj)):# gere exception
             return len(self.adj[somm])
         return "Le sommet n'existe pas pour ce graphe"
 
@@ -84,6 +84,46 @@ class GrapheNO:
                     del i[j]
         del self.adj[s]
 
+    def composanteConnexe(self, i):
+        """renvoie pour un sommet i la liste des sommets
+        de la composante connexe de i"""
+        if self.taille()==0:# gere exception
+            return []
+        connu = [False]*(self.ordre+1)
+        compConx=[]*(self.ordre+1)
+        connu[i]=True
+        compConx.append(i)
+        while len(compConx) != 0:# tant que la file d'attente n'est pas vide
+            enAttente = compConx.pop()#recupère sommet
+            for i in self.adj[enAttente]:
+                if connu[i] == False:
+                    compConx.append(i)
+                    connu[i]=True
+        return [i for i in range(len(connu)) if connu[i]==True]
+
+    # marche pas
+    def nbComposantesConnexes(self):
+        """retourne le nombre de composantes connexes du graphe
+        utilise composanteConnexe"""
+        """listeC = [[]*n for n in range(self.ordre)]
+        for i in range(self.ordre):
+            booleen =True
+            for j in listeC:
+                if i in j:
+                    booleen = False
+            if booleen:
+                liste = self.composanteConnexe(i)
+                if liste not in listeC:
+                    listeC.append(liste)
+        return len(listeC)"""
+        nb = 0
+        lsiteC = []
+        for i in range(self.ordre):
+            liste = self.composanteConnexe(i)
+            if (set(listeC) & set(liste)):
+                listeC.append(liste)
+                nb +=1
+        return nb
 
 
 def grapheComplet(n):
@@ -111,6 +151,7 @@ def ordreArete(arete):
     maxi = [max(i) for i in arete]
     return max(maxi)+1
 
+# marche ?
 def aretes_vers_liste_adj(n, li_a):
     """renvoie liste adjacence à partir
     d'une liste d'aretes"""
@@ -123,8 +164,8 @@ def aretes_vers_liste_adj(n, li_a):
 def lireAretesEtOrdre(nomdufichier):
     """lit le fichier et renvoie la liste des aretes qui s'y trouvent
     ainsi que l'ordre"""
-    #f = file(nomdufichier, 'r')# ouverture du fichier
-    f = open(nomdufichier, 'r')
+    f = file(nomdufichier, 'r')# ouverture du fichier python 2.7
+    #f = open(nomdufichier, 'r')# python 3.6
     lignes = f.readlines()
     #on extrait les lignes qui commencent par 'E'
     #si c'est bon on cree une nouvelle arete
@@ -151,7 +192,7 @@ def lireGrapheNO(nomdufichier):
 #      #
 
 
-
+os.system('clear')
 liste = [[2,4],[2,3,4],[0,1,3,4],[1,2],[0,1,2]]
 graphe = GrapheNO(liste)
 graphe.affiche()
@@ -181,3 +222,16 @@ grapheTriangle.ajoutSommet([2])
 grapheTriangle.affiche()
 grapheTriangle.supprSommet(3)
 grapheTriangle.affiche()
+grapheTriangle.ajoutSommet([])
+grapheTriangle.affiche()
+listeComp = graphe3.composanteConnexe(3)
+print "Composante connexe : ", listeComp
+
+print "Lecture des fichiers composantes.txt"
+for i in range(10):
+    fichier="composantes"+ str(i)+".txt"
+    grapheTxt = lireGrapheNO(fichier)
+    listeCompTxt = grapheTxt.composanteConnexe(333)
+    print "Composante connexe : ", len(listeCompTxt)
+    #print "Nombre de composantes : ", grapheTxt.nbComposantesConnexes()
+    print grapheTxt.ordre
