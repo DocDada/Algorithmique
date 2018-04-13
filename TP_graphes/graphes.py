@@ -13,50 +13,36 @@ class GrapheNO:
     def __init__(self, l_adj):
         """initialise un graphe d'apres la liste d'adjacence
         l_adj et son ordre n"""
-        self.ordre = len(l_adj)# nb sommets
+        self.ordre = len(l_adj)# nombre de sommets
         self.adj = l_adj# liste adjacence
 
     def affiche(self):
-        """affiche le graphe"""
-        #print "Ordre du graphe : ", self.ordre
+        """affiche le graphe et son ordre"""
         print ("Ordre du graphe : ", self.ordre)
         for i in self.adj:
-            #print i
             print (i)
 
-    def degre(self, somm):
+    def degre(self, sommet):
         """nombre de voisins du sommet somm"""
-        if (somm<len(self.adj)):# gere exception
-            return len(self.adj[somm])
-        return "Le sommet n'existe pas pour ce graphe"
+        if (sommet<len(self.adj)):# gere exception
+            return len(self.adj[sommet])
+        return "Le sommet ", sommet, " n'existe pas pour ce graphe"
 
     def taille(self):
         """renvoie nombre d'aretes du graphe"""
-        nb = 0# nombre d'aretes
-        for i in self.adj:
-            nb = nb + len(i)
-        return int(nb/2)
+        nombreAretes = 0# nombre d'aretes
+        for aretesSommet in self.adj:
+            nombreAretes = nombreAretes + len(aretesSommet)
+        return int(nombreAretes/2)
 
     def degreMax(self):
         """renvoie degre/voisins max d'un graphe"""
         return max(max(i) for i in self.adj)
 
-    def nombreTriangle(self):
-        """renvoie nombre de triangle dans un grapheNO"""
-        nb = 0# nombre de triangles
-        sommet = 0
-        for i in range(len(self.adj)-1):
-            if self.degre(i)>=2:# gere exception
-                sommet = i
-                for j in self.adj[i+1]:
-                    if j==sommet:
-                        nb += 1
-        if nb>0:#gere exception
-            return nb-1
-        return 0
-
     # correction
     def nomb(self):
+        """renvoie le nombre de triangles dans un
+        graphe"""
         n = 0
         for i in range(len(self.adj)):
             for j in self.adj[i]:
@@ -89,8 +75,8 @@ class GrapheNO:
         de la composante connexe de i"""
         if self.taille()==0:# gere exception
             return []
-        connu = [False]*(self.ordre+1)
-        compConx=[]*(self.ordre+1)
+        connu = [False]*(self.ordre)
+        compConx=[]
         connu[i]=True
         compConx.append(i)
         while len(compConx) != 0:# tant que la file d'attente n'est pas vide
@@ -101,13 +87,12 @@ class GrapheNO:
                     connu[i]=True
         return [i for i in range(len(connu)) if connu[i]==True]
 
-    # marche pas
     def nbComposantesConnexes(self):
         """retourne le nombre de composantes connexes du graphe
         utilise composanteConnexe"""
-        """listeC = [[]*n for n in range(self.ordre)]
+        listeC = []# on ne connait pas la taille de la liste
         for i in range(self.ordre):
-            booleen =True
+            booleen = True
             for j in listeC:
                 if i in j:
                     booleen = False
@@ -115,15 +100,7 @@ class GrapheNO:
                 liste = self.composanteConnexe(i)
                 if liste not in listeC:
                     listeC.append(liste)
-        return len(listeC)"""
-        nb = 0
-        lsiteC = []
-        for i in range(self.ordre):
-            liste = self.composanteConnexe(i)
-            if (set(listeC) & set(liste)):
-                listeC.append(liste)
-                nb +=1
-        return nb
+        return len(listeC)
 
 
 def grapheComplet(n):
@@ -135,16 +112,43 @@ def grapheComplet(n):
                 liste[i].append(j)
     return GrapheNO(liste)
 
+# correction
+def grapheCompletCorrection(n):
+    """ne marche pas pour n=1, =2, =0"""
+    l_adj = []
+    for v in range(n):
+        voisinage = []
+        for voisin in range(n):
+            if voisin != v:
+                voisinage.append(voisin)
+        l_adj.append(voisinage)
+    return GrapheNO(l_adj)
+
+
 def cycle(n):
     """renvoie cycle à n sommets"""
     liste = [[]*n for i in range(n)]
-    if n!=0:
+    if n>2:
         liste[0] = [n-1, 1]
-        for i in range(1, n):
-            liste[i]=[i-1, i+1]
+        for v in range(1, n):
+            liste[v]=[v-1, v+1]
         liste[n-1] = [n-2, 0]
         return GrapheNO(liste)
-    return GrapheNO([])
+    elif n==1:
+        return GrapheNO([[]])
+    elif n==2:
+        return GrapheNO([[1][0]])
+
+# correction
+def cycleCorrection(n):
+    l_adj = [[1, n-1]]
+    for v in range(1, n-1):
+        l_adj.append([v-1, v+1])
+    l_adj.append([n-2, 0])
+    return GrapheNO(l_adj)
+
+
+
 
 def ordreArete(arete):
     """renvoie ordre d'une liste d'aretes"""
@@ -152,20 +156,20 @@ def ordreArete(arete):
     return max(maxi)+1
 
 # marche ?
-def aretes_vers_liste_adj(n, li_a):
+def aretes_vers_liste_adj(ordre, li_a):
     """renvoie liste adjacence à partir
     d'une liste d'aretes"""
-    liste = [[]*n for i in range(n)]
+    liste = [[]*ordre for i in range(ordre)]
     for i in li_a:
         liste[i[0]].append(i[1])
         liste[i[1]].append(i[0])
     return GrapheNO(liste)
 
-def lireAretesEtOrdre(nomdufichier):
+def lireAretesEtOrdre(nomDuFichier):
     """lit le fichier et renvoie la liste des aretes qui s'y trouvent
     ainsi que l'ordre"""
-    f = file(nomdufichier, 'r')# ouverture du fichier python 2.7
-    #f = open(nomdufichier, 'r')# python 3.6
+    #f = file(nomDuFichier, 'r')# ouverture du fichier python 2.7
+    f = open(nomDuFichier, 'r')# python 3.6
     lignes = f.readlines()
     #on extrait les lignes qui commencent par 'E'
     #si c'est bon on cree une nouvelle arete
@@ -179,10 +183,10 @@ def lireAretesEtOrdre(nomdufichier):
             ordre = int(mots[1])# récupère l'ordre du graphe
     return aretes, ordre
 
-def lireGrapheNO(nomdufichier):
+def lireGrapheNO(nomDuFichier):
     """renvoie graphe à partir du nom du fichier
     utilise la fonction lireAretesEtOrdre"""
-    arete, ordre = lireAretesEtOrdre(nomdufichier)
+    arete, ordre = lireAretesEtOrdre(nomDuFichier)
     return aretes_vers_liste_adj(ordreArete(arete), arete)
 
 
@@ -200,23 +204,26 @@ grapheVide = GrapheNO([[]])
 print ("Nombre de voisins : ",graphe.degre(0))
 print ("Nombre de voisins d'un grpahe vide : ", grapheVide.degre(1))
 print ("Nombre d'arêtes", graphe.taille())
+print ("GRAPHE COMPLET")
 graphe2 = grapheComplet(4)
 graphe2.affiche()
+graphe2c = grapheComplet(4)
+graphe2c.affiche()
 
 graphe3 = cycle(5)
 graphe3.affiche()
 
-arete = [[0,2],[0,4],[1,2],[1,3],[1,4],[2,3],[2,4]]
+#arete = [[0,2],[0,4],[1,2],[1,3],[1,4],[2,3],[2,4]]
+arete = [[0, 3],[1,2]]
 graphe4 = aretes_vers_liste_adj(ordreArete(arete), arete)
 graphe4.affiche()
 
 #graphe5 = lireGrapheNO("metro.txt")
 #graphe5.affiche()
-
+"""
 listeTriangles2 = [[2,1], [0,2,3], [0,1, 3], [1,2]]
 listeTriangles1 = [[1,2], [0], [0]]
 grapheTriangle = GrapheNO(listeTriangles1)
-print ("Nombre de triangle", grapheVide.nombreTriangle())
 print ("Nombre de triangle", grapheTriangle.nomb())
 grapheTriangle.ajoutSommet([2])
 grapheTriangle.affiche()
@@ -225,13 +232,48 @@ grapheTriangle.affiche()
 grapheTriangle.ajoutSommet([])
 grapheTriangle.affiche()
 listeComp = graphe3.composanteConnexe(3)
-print "Composante connexe : ", listeComp
+print ("Composante connexe : ", listeComp)
+"""
 
-print "Lecture des fichiers composantes.txt"
+print ("Nombre de triangle vide", grapheVide.nomb())
+print ("Nombre de triangle dans un cycle", graphe3.nomb())
+print ("Nombre de triangle dans ", graphe2.nomb())
+
+
+grapheCycle1 = cycle(1)
+print ("Cycle 1")
+grapheCycle1.affiche()
+
+grapheCycle2 = cycle(2)
+print ("Cycle 2")
+grapheCycle2.affiche()
+
+grapheCycle3 = cycle(3)
+print ("Cycle 3")
+grapheCycle3.affiche()
+"""
+print ("Correction CYCLE")
+
+
+grapheCycle0 = cycleCorrection(0)
+print ("Cycle 0")
+grapheCycle0.affiche()
+
+grapheCycle2 = cycleCorrection(2)
+print ("Cycle 2")
+grapheCycle2.affiche()
+
+grapheCycle3 = cycleCorrection(3)
+print ("Cycle 3")
+grapheCycle3.affiche()
+"""
+print ("Lecture des fichiers composantes.txt")
+
+
+
 for i in range(10):
     fichier="composantes"+ str(i)+".txt"
     grapheTxt = lireGrapheNO(fichier)
     listeCompTxt = grapheTxt.composanteConnexe(333)
-    print "Composante connexe : ", len(listeCompTxt)
-    #print "Nombre de composantes : ", grapheTxt.nbComposantesConnexes()
-    print grapheTxt.ordre
+    print ("Composante connexe : ", len(listeCompTxt))
+    print ("Nombre de composantes : ", grapheTxt.nbComposantesConnexes())
