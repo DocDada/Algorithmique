@@ -10,11 +10,22 @@ import os
 class GrapheNO:
     """graphe code par liste d'adjacence. Sommets numérotés
     entre numerotes 0,1,...,n-1"""
+
     def __init__(self, l_adj):
         """initialise un graphe d'apres la liste d'adjacence
         l_adj et son ordre n"""
         self.ordre = len(l_adj)# nombre de sommets
         self.adj = l_adj# liste adjacence
+
+    # correction
+    def __str__(self):
+        """permet de faire un print sur le graphe"""
+        s = "Ordre du graphe : " + str(self.ordre) + "\n"
+        s += "Taille du graphe : " + str(self.taille()) + "\n"
+        for v in range(self.ordre):
+            s += "voisins de " + str(v) + " -> " + str(self.adj[v]) + "\n"
+        return s
+
 
     def affiche(self):
         """affiche le graphe et son ordre"""
@@ -39,8 +50,19 @@ class GrapheNO:
         """renvoie degre/voisins max d'un graphe"""
         return max(max(i) for i in self.adj)
 
-    # correction
-    def nomb(self):
+    # correction 1
+    def nombreTrianglesV1(self):
+        """compte le nombre de triangles version basique"""
+        compteur = 0
+        for v1 in range(self.ordre):
+            for v2 in range(self.ordre):
+                for v3 in range(self.ordre):
+                    if v2 in self.adj[v1] and v3 in self.adj[v2] and v1 in self.adj[v3]:
+                        compteur += 1
+        return int(compteur/6)
+
+    # correction 2
+    def nombreTrianglesV2(self):
         """renvoie le nombre de triangles dans un
         graphe"""
         n = 0
@@ -75,10 +97,8 @@ class GrapheNO:
         de la composante connexe de i"""
         if self.taille()==0:# gere exception
             return []
-        connu = [False]*(self.ordre)
-        compConx=[]
-        connu[i]=True
-        compConx.append(i)
+        connu = [i==j for j in range(self.ordre)]
+        compConx=[i]# file d'attente
         while len(compConx) != 0:# tant que la file d'attente n'est pas vide
             enAttente = compConx.pop()#recupère sommet
             for i in self.adj[enAttente]:
@@ -102,6 +122,26 @@ class GrapheNO:
                     listeC.append(liste)
         return len(listeC)
 
+    # correction
+    def nb_composantes_connexes(self):
+        """renvoie le nb de composantes connexes dans le graphe"""
+        compteur_comp = 0
+        composantes = [None]*self.ordre
+        for v in range(self.ordre):
+            if composantes[v] == None:  #s'il est inconnu encore
+                compteur_comp += 1
+                composantes[v] = compteur_comp
+                #lance un parcours depuis v
+                attente = [v]
+                while attente:
+                    courant = attente.pop()
+                    for voisin in self.adj[courant]:
+                        if composantes[voisin] == None : #il est inconnu
+                            composantes[voisin] = compteur_comp
+                            attente.append(voisin)
+                #parcours fini
+        return compteur_comp
+
 
 def grapheComplet(n):
     """renvoie grapheNo complet à n sommet"""
@@ -124,6 +164,10 @@ def grapheCompletCorrection(n):
         l_adj.append(voisinage)
     return GrapheNO(l_adj)
 
+# correction
+def grapheCompletDesStars(n):
+    """version pour les ptits champions"""
+    return GrapheNO( [ range(i)+ range(i+1,n) for i in range(n)])
 
 def cycle(n):
     """renvoie cycle à n sommets"""
@@ -163,7 +207,7 @@ def aretes_vers_liste_adj(ordre, li_a):
     for i in li_a:
         liste[i[0]].append(i[1])
         liste[i[1]].append(i[0])
-    return GrapheNO(liste)
+    return liste
 
 def lireAretesEtOrdre(nomDuFichier):
     """lit le fichier et renvoie la liste des aretes qui s'y trouvent
@@ -187,7 +231,7 @@ def lireGrapheNO(nomDuFichier):
     """renvoie graphe à partir du nom du fichier
     utilise la fonction lireAretesEtOrdre"""
     arete, ordre = lireAretesEtOrdre(nomDuFichier)
-    return aretes_vers_liste_adj(ordreArete(arete), arete)
+    return GrapheNO(aretes_vers_liste_adj(ordreArete(arete), arete))
 
 
 
