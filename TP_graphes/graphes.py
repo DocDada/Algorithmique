@@ -183,6 +183,12 @@ def cycle(n):
     elif n==2:
         return GrapheNO([[1][0]])
 
+
+def superCycle(n):
+    """cycle de champion : 1 ligne
+    ne gere pas les exceptions"""
+    return GrapheNO([[(n+i-1)%n, (i+1)%n] for i in range(n)])
+
 # correction
 def cycleCorrection(n):
     l_adj = [[1, n-1]]
