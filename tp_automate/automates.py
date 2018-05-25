@@ -75,6 +75,53 @@ class Automate:
             texte += " " + str(e)
         return texte
 
+    # marche pas
+    def est_complet(self):
+        """renvoie un booleen indiquant si le graphe est complet ou non"""
+        for q in self.transition:
+            for symb in self.alphabet:
+                if symb not in self.transition[q]:
+                    return False
+        return True
+
+    def est_deterministe(self):
+        """renvoie un booleen indiquant si le graphe est deterministe ou non"""
+        if len(self.initiaux)!=1:
+            return False
+        for q in self.transition:
+            for symb in self.transition[q]:
+                if len(self.transition[q][symb]) > 1:
+                    return False
+                if symb =='eps' and len(self.transition[q])==0:
+                    return False
+        return True
+
+    def contient_epsilon_transitions(self):
+        for q in self.transition:
+            for symb in self.transition[q]:
+                if symb =='eps' and len(self.transition[q][symb])!=0:
+                    return True
+        return False
+
+    def reconnait_v1(self, mot):
+        """determine si un mot est reconnu ou non par l'automate
+        (cas deterministe complet sans epsilon transitions"""
+        if self.contient_epsilon_transitions():
+            raise Exception("L'automate doit être sans epsilon transitions.")
+        if not self.est_deterministe():
+            raise Exception("L'automate doit être deterministe.")
+        trans, = self.initiaux# recupere l'etat initial (premier element)
+        final, = self.finals
+        for char in mot:
+            trans, = self.transition[trans][char]
+        return trans==final
+
+    def mots_reconnus(self):
+        """renvoie la liste des mots de taille au plus n reconnus par
+        l'automate"""
+
+
+
 
     def verification(self):
         """méthode qui vérifie que l'automate est convenablement formé
@@ -88,7 +135,7 @@ class Automate:
         assert type(self.finals) is set
 
         #verifie que 'eps' ne soit pas dans l'alphabet
-        assert 'eps' not in self.alphabet
+        assert 'epys' not in self.alphabet
 
         #on verifie que la fonction de transition contient toutes les entrees
         #etat * symbole exactement et que les ensembles correspondants
@@ -211,4 +258,23 @@ def mots_taille_au_plus(n, alphabet):
             mots[i].extend([m+symb for m in mots[i-1]])
     return [x for ligne in mots for x in ligne]
 
+
+
+
+
+
+
+
+########
+# MAIN #
+########
+
+for i in range(1,5):
+    auto1 = lire_automate("auto"+str(i)+".txt")
+    print auto1
+    print "EST IL COMPLET ? ", auto1.est_complet()
+    print "EST IL DETERMINISTE ? ", auto1.est_deterministe()
+    print "CONTIENT IL DES EPSILON TRANSITIONS ? ", auto1.contient_epsilon_transitions()
+    if i==1:
+        print "RECONNAIT V1 : ", auto1.reconnait_v1("bbbbbaba")
 
