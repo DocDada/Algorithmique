@@ -1,23 +1,24 @@
 #!/usr/bin/python
+#coding:utf-8
 # Algorithmique S3
 # TP 1
 # Implementation d'algorithmes de tri
 
 import random
 
+################################################################################
+
 def tri_rapide(tab, gauche, droite, r):
-    cp = 0
-    cp2 = 0
-    cp3 = 0
+    cp = cp2 = cp3 = 0
     if droite - gauche > r:
         tab, k, cp = placer(tab, gauche, droite)
-        tab, cp2 = tri_rapide(tab, gauche, k-1, r)
-        tab, cp3 = tri_rapide(tab, k+1, droite, r)
+        tab, cp2 = tri_rapide(tab, gauche, k - 1, r)
+        tab, cp3 = tri_rapide(tab, k + 1, droite, r)
     return tab, (cp + cp2 + cp3)
 
 def placer(tab, gauche, droite):
     cp = 0
-    bas = gauche +1
+    bas = gauche + 1
     haut = droite
     while bas <= haut:
         while tab[bas] <= tab[gauche]:
@@ -30,9 +31,9 @@ def placer(tab, gauche, droite):
             tab[bas], tab[haut] = tab[haut], tab[bas]
             bas = bas + 1
             haut = haut - 1
+        cp += 2
     tab[gauche], tab[haut] = tab[haut], tab[gauche]
-    k = haut
-    return tab, k, cp
+    return tab, haut, cp
 
 def saisie_tableau(sentinelle_gauche, sentinelle_droite):
     """demande a l'utilisateur d'entrer la taille d'un tableau, et ses
@@ -51,45 +52,54 @@ def saisie_tableau(sentinelle_gauche, sentinelle_droite):
     for e in range(debut, fin):
         tab[e] = input("Entrez une valeur : ")
 
-    if sentinelle_gauche and sentinelle_droite:
-        tab[len(tab) - 1] = max(tab) + 1# ajout de la sentinelle
-        tab[0] = min(tab) - 1# sentinelle en T[0]
-        return tab
-    if sentinelle_droite:
-        tab[len(tab) - 1] = max(tab) + 1# ajout de la sentinelle
+    tab = ajout_sentinelle(sentinelle_gauche, sentinelle_droite)
+    if not sentinelle_gauche and sentinelle_droite:
         return tab, taille
-    else:
-        tab[0] = min(tab) - 1# sentinelle en T[0]
+    return tab
+
+def ajout_sentinelle(tab, s_gauche, s_droite):
+    """ajoute les sentinelles"""
+    if s_gauche:
+        tab[0] = min(tab) - 1
+    if s_droite:
+        tab[len(tab) - 1] = max(tab) + 1
+    return tab
+
+def ajout_sentinelle2(tab, s_gauche, s_droite):
+    """ajoute les sentinelles"""
+    if s_gauche:
+        tab.insert(0, min(tab) - 1)
+    if s_droite:
+        tab.append(max(tab) + 1)
     return tab
 
 def tableau_aleatoire(n):
     """renvoie de taille n, dont les elements sont aleatoires"""
-    if n <= 0:
+    if n <= 0:# gestion des exceptions
         return []
-    tab = [None] * n
+    tab = [0] * n
     for e in range(n - 1):
-        tab[e] = random.randint(-5000, 5000)
-    tab[n - 1] = max(tab) + 1# ajout de la sentinelle
+        tab[e] = random.randint(-50, 50)
     return tab
 
 def comparaisons_cles(n, p, tri_rap):
-    """taille de tableau n, nombre de tableaux p
-    renvoie le nombre moyen de comparaisons des tris des tableaux aleatoires"""
-    cp = 0
-    cpbis = 0
+    """taille de tableau n, nombre de tableaux p renvoie le nombre moyen de
+    comparaisons des tris des tableaux aleatoires"""
+    cp = cpbis = 0
     for t in range(p):
         tab = tableau_aleatoire(n)
         if tri_rap:
+            tab = ajout_sentinelle(tab, False, True)
             tab, cpbis = tri_rapide(tab, 0, n - 1, 0)
         else:
+            tab = ajout_sentinelle(tab, True, False)
             tab, cpbis = tri_insertion(tab)
         cp += cpbis
-    return cp/p
+    return cp / p
 
 def tri_insertion(tab):
-    """effectue le tri par insertion sur un tableau tableau
-    rajoute une sentinelle en T[0]
-    renvoie le tableau trie"""
+    """effectue le tri par insertion sur un tableau tableau rajoute une
+    sentinelle en T[0] renvoie le tableau trie"""
     cp = 0
     for i in range(2, len(tab)):
         j = i - 1
@@ -98,16 +108,15 @@ def tri_insertion(tab):
             cp += 1
             tab[j + 1] = tab[j]
             j -= 1
+        cp += 1
         tab[j + 1] = x
     return tab, cp
 
 def tri_hybride(tab, gauche, droite, r):
     """tri rapide de sous tableaux de taille r au plus, dont les elements
-    doivent etre inferieurs aux elements du sous tableau suivant
-    le tableau intermediaire est ensuite trie par insertion
-    """
-    cp = 0
-    cp2 = 0
+    doivent etre inferieurs aux elements du sous tableau suivant le tableau
+    intermediaire est ensuite trie par insertion"""
+    cp = cp2 = 0
     if r <= 0:
         return tab
     tab, cp = tri_rapide(tab, gauche, droite, r)
@@ -115,15 +124,15 @@ def tri_hybride(tab, gauche, droite, r):
     return tab, (cp + cp2)
 
 def comparaisons_cles_tri_hybride(n, p, r):
-    """taille de tableau n, nombre de tableaux p
-    renvoie le nombre moyen de comparaisons des tris des tableaux aleatoires"""
-    cp = 0
-    cpbis = 0
+    """taille de tableau n, nombre de tableaux p; renvoie le nombre moyen de
+    comparaisons des tris des tableaux aleatoires"""
+    cp = cpbis = 0
     for t in range(p):
         tab = tableau_aleatoire(n)
+        tab = ajout_sentinelle(tab, True, True)
         tab, cpbis = tri_hybride(tab, 0, n - 1, r)
         cp += cpbis
-    return cp/p
+    return cp / p
 
 ##########################
 #          MAIN          #
@@ -134,10 +143,10 @@ def main():
     #tab, cp = tri_rapide(tab, 0, taille - 1, 0)
     #print tab, cp
     
-    print comparaisons_cles(10, 10, True)#15
-    print comparaisons_cles(100, 10, True)#430
-    print comparaisons_cles(500, 50, True)#3300
-    print comparaisons_cles(1000, 50, True)#7500
+    print comparaisons_cles(10, 10, True)#33
+    print comparaisons_cles(100, 10, True)#750
+    print comparaisons_cles(500, 50, True)#6600
+    print comparaisons_cles(1000, 50, True)#18700
     #tab2, cp = tri_insertion(saisie_tableau(True, False))
     #print tab2, cp
     print comparaisons_cles(10, 10, False)#10
@@ -148,14 +157,17 @@ def main():
     tab3 = saisie_tableau(True, True)
     tab3, cp = tri_hybride(tab3, 0, len(tab3) - 1, 3)
     print tab3, cp"""
-    print comparaisons_cles_tri_hybride(10, 10, 3)#15
-    print comparaisons_cles_tri_hybride(100, 10, 3)#430
-    print comparaisons_cles_tri_hybride(500, 50, 50)#5600
-    print comparaisons_cles_tri_hybride(1000, 50, 50)#12500
-    print comparaisons_cles_tri_hybride(500, 50, 5)#3100
-    print comparaisons_cles_tri_hybride(1000, 50, 5)#7400
+    print comparaisons_cles_tri_hybride(10, 10, 3)#38
+    print comparaisons_cles_tri_hybride(100, 10, 3)#800
+    print comparaisons_cles_tri_hybride(500, 50, 50)#7000
+    print comparaisons_cles_tri_hybride(1000, 50, 50)#14000
+    print comparaisons_cles_tri_hybride(500, 50, 5)#5800
+    print comparaisons_cles_tri_hybride(1000, 50, 5)#15400
+    #tab = [0,5,12,1,9999]
+    #tab, cp = tri_rapide(tab, 0, 4, 0)
+    #print tab, cp
 
-##########################
+################################################################################
 
 main()
 
