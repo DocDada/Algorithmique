@@ -97,6 +97,15 @@ def comparaisons_cles(n, p, tri_rap):
         cp += cpbis
     return cp / p
 
+def ecrire_comparaisons_fichier(nom_fichier):
+    f = open(nom_fichier, 'w')
+    for t in range(10, 100):
+        tab = tableau_aleatoire(t)
+        tab = ajout_sentinelle(tab, False, True)
+        tab, cpbis = tri_rapide(tab, 0, t - 1, 0)
+        f.write(str(t) + ' ' + str(cpbis) + '\n')
+    f.close()
+
 def tri_insertion(tab):
     """effectue le tri par insertion sur un tableau tableau rajoute une
     sentinelle en T[0] renvoie le tableau trie"""
@@ -142,7 +151,7 @@ def main():
     #tab, taille = saisie_tableau(False, True)
     #tab, cp = tri_rapide(tab, 0, taille - 1, 0)
     #print tab, cp
-    
+
     print comparaisons_cles(10, 10, True)#33
     print comparaisons_cles(100, 10, True)#750
     print comparaisons_cles(500, 50, True)#6600
@@ -169,6 +178,7 @@ def main():
 
 ################################################################################
 
-main()
+#main()
+ecrire_comparaisons_fichier("comp.txt")
 
 
