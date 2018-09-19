@@ -99,8 +99,8 @@ def comparaisons_cles(n, p, tri_rap):
 
 def ecrire_comparaisons_fichier(nom_fichier, tri):
     f = open(nom_fichier, 'w')
-    r = 10
-    for t in range(10, 1000):
+    r = 20
+    for t in range(10, 500):
         tab = tableau_aleatoire(t)
         tab = ajout_sentinelle(tab, False, True)
         if tri == 'i':
@@ -174,6 +174,13 @@ def main():
     tab3, cp = tri_hybride(tab3, 0, len(tab3) - 1, 3)
     print tab3, cp"""
     print "TRI HYBRIDE"
+    """
+    print comparaisons_cles_tri_hybride(50, 10, 3)#38
+    print comparaisons_cles_tri_hybride(50, 10, 3)#800
+    print comparaisons_cles_tri_hybride(50, 50, 50)#7000
+    print comparaisons_cles_tri_hybride(50, 50, 50)#14000
+    """
+
     print comparaisons_cles_tri_hybride(10, 10, 3)#38
     print comparaisons_cles_tri_hybride(100, 10, 3)#800
     print comparaisons_cles_tri_hybride(500, 50, 50)#7000
@@ -181,6 +188,7 @@ def main():
     print comparaisons_cles_tri_hybride(500, 50, 5)#5800
     print comparaisons_cles_tri_hybride(1000, 50, 5)#15400
     print comparaisons_cles_tri_hybride(5000, 50, 5)#15400
+
     print "CHANGEMENT DE R"
     # plus R (taille des sous tableaux) augmente, plus le nombre de comparaisons
     # augmente
@@ -209,6 +217,7 @@ def main():
     print comparaisons_cles_tri_hybride(100, 50, 30)#970
     print comparaisons_cles_tri_hybride(100, 50, 40)#
     print comparaisons_cles_tri_hybride(100, 50, 50)#
+
     # La valeur de R pour laquelle on obtient un nombre de comparaisons minimal
     # pas en fonction de N (autour de 10)
 
@@ -223,7 +232,22 @@ def main2():
     ecrire_comparaisons_fichier("compr.txt", 'r')
     ecrire_comparaisons_fichier("comph.txt", 'h')
 
+def nombre_comp_moy_tris_rap_hyb(n, p, d, f):
+    cp = cp2 = 0
+    for i in range(d, f):
+        cp += comparaisons_cles(n, p, True)#61300
+
+    for i in range(d, f):
+        cp2 += comparaisons_cles_tri_hybride(n, p, i)#38
+    cp2 = cp2 / (f - d + 1)
+    cp = cp / (f - d + 1)
+    print "hybride : ", cp2
+    print "rapide : ", cp
+    print "rapport hybride / rapide : ", float(cp2) / cp
+
 ################################################################################
 
-main()
+#main()
 #main2()
+nombre_comp_moy_tris_rap_hyb(1000, 10, 2, 10)
+nombre_comp_moy_tris_rap_hyb(1000, 10, 20, 50)
