@@ -79,7 +79,7 @@ def tableau_aleatoire(n):
         return []
     tab = [0] * n
     for e in range(n - 1):
-        tab[e] = random.randint(-50, 50)
+        tab[e] = random.randint(-5000, 5000)
     return tab
 
 def comparaisons_cles(n, p, tri_rap):
@@ -97,12 +97,18 @@ def comparaisons_cles(n, p, tri_rap):
         cp += cpbis
     return cp / p
 
-def ecrire_comparaisons_fichier(nom_fichier):
+def ecrire_comparaisons_fichier(nom_fichier, tri):
     f = open(nom_fichier, 'w')
-    for t in range(10, 100):
+    r = 10
+    for t in range(10, 1000):
         tab = tableau_aleatoire(t)
         tab = ajout_sentinelle(tab, False, True)
-        tab, cpbis = tri_rapide(tab, 0, t - 1, 0)
+        if tri == 'i':
+            tab, cpbis = tri_insertion(tab)
+        if tri == 'r':
+            tab, cpbis = tri_rapide(tab, 0, t - 1, 0)
+        if tri == 'h':
+            tab, cpbis = tri_hybride(tab, 0, t - 1, r)
         f.write(str(t) + ' ' + str(cpbis) + '\n')
     f.close()
 
@@ -151,13 +157,14 @@ def main():
     #tab, taille = saisie_tableau(False, True)
     #tab, cp = tri_rapide(tab, 0, taille - 1, 0)
     #print tab, cp
-
+    print "TRI RAPIDE"
     print comparaisons_cles(10, 10, True)#33
     print comparaisons_cles(100, 10, True)#750
-    print comparaisons_cles(500, 50, True)#6600
-    print comparaisons_cles(1000, 50, True)#18700
+    print comparaisons_cles(500, 50, True)#5600
+    print comparaisons_cles(1000, 50, True)#12700
     #tab2, cp = tri_insertion(saisie_tableau(True, False))
     #print tab2, cp
+    print "TRI INSERTION"
     print comparaisons_cles(10, 10, False)#10
     print comparaisons_cles(100, 10, False)#2300
     print comparaisons_cles(500, 50, False)#61300
@@ -166,19 +173,57 @@ def main():
     tab3 = saisie_tableau(True, True)
     tab3, cp = tri_hybride(tab3, 0, len(tab3) - 1, 3)
     print tab3, cp"""
+    print "TRI HYBRIDE"
     print comparaisons_cles_tri_hybride(10, 10, 3)#38
     print comparaisons_cles_tri_hybride(100, 10, 3)#800
     print comparaisons_cles_tri_hybride(500, 50, 50)#7000
     print comparaisons_cles_tri_hybride(1000, 50, 50)#14000
     print comparaisons_cles_tri_hybride(500, 50, 5)#5800
     print comparaisons_cles_tri_hybride(1000, 50, 5)#15400
+    print comparaisons_cles_tri_hybride(5000, 50, 5)#15400
+    print "CHANGEMENT DE R"
+    # plus R (taille des sous tableaux) augmente, plus le nombre de comparaisons
+    # augmente
+    print comparaisons_cles_tri_hybride(20000, 50, 2)#390000
+    print comparaisons_cles_tri_hybride(20000, 50, 4)#370000
+    print comparaisons_cles_tri_hybride(20000, 50, 8)#370000#
+    print comparaisons_cles_tri_hybride(20000, 50, 16)#370000
+    print comparaisons_cles_tri_hybride(20000, 50, 32)#400000
+    print comparaisons_cles_tri_hybride(20000, 50, 64)#480000
+    print comparaisons_cles_tri_hybride(20000, 50, 128)#670000
+    print comparaisons_cles_tri_hybride(20000, 50, 256)#1000000
+    print "CHANGEMENT DE N"
+    # plus N (taille du tableau) est petit, plus le nombre de comparaisons
+    # est petit
+    print comparaisons_cles_tri_hybride(10, 50, 8)#30
+    print comparaisons_cles_tri_hybride(100, 50, 8)#800
+    print comparaisons_cles_tri_hybride(1000, 50, 8)#12000
+    print comparaisons_cles_tri_hybride(10000, 50, 8)#175000
+    print comparaisons_cles_tri_hybride(100000, 50, 8)#2200000
+    # R depend t elle de la valeur de N ?
+    print "CHANGEMENT DE R pour un N different"
+    print comparaisons_cles_tri_hybride(100, 50, 2)#888
+    print comparaisons_cles_tri_hybride(100, 50, 5)#850
+    print comparaisons_cles_tri_hybride(100, 50, 10)#823#
+    print comparaisons_cles_tri_hybride(100, 50, 20)#882
+    print comparaisons_cles_tri_hybride(100, 50, 30)#970
+    print comparaisons_cles_tri_hybride(100, 50, 40)#
+    print comparaisons_cles_tri_hybride(100, 50, 50)#
+    # La valeur de R pour laquelle on obtient un nombre de comparaisons minimal
+    # pas en fonction de N (autour de 10)
+
+    #tab = [0,5,12,1,9999]
+    #tab, cp = tri_rapide(tab, 0, 4, 0)
     #tab = [0,5,12,1,9999]
     #tab, cp = tri_rapide(tab, 0, 4, 0)
     #print tab, cp
 
+def main2():
+    ecrire_comparaisons_fichier("compi.txt", 'i')
+    ecrire_comparaisons_fichier("compr.txt", 'r')
+    ecrire_comparaisons_fichier("comph.txt", 'h')
+
 ################################################################################
 
-#main()
-ecrire_comparaisons_fichier("comp.txt")
-
-
+main()
+#main2()
