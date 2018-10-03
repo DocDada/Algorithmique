@@ -87,33 +87,21 @@ def tree_fusion_with_operand(e1, e2, op):
     else:
         return Arbre(op, e1, e2)
 
-# A VERIFIER
-def replace_variable_by_value(e, xa):
-    """replace in the arithmetical expression the variables by their value
-    listed in xa"""
-    if e:
-        e_b = e
-        return replace_values(e_b, xa)
-    return e
 
-# A VERIFIER
 def replace_values(e, xa):
-    if e:
-        if e.val not in oper:
-            for v in xa:
-                if e.val in v:
-                    e.val = v[1]
-        e.G = replace_values(e.G, xa)
+    """replace in the arithmetical expression the variables by their value 
+    listed in xa
+    We can assume that e is a well-formed expression tree
+    on suppose que e est bien formée -- donc non vide, entre autres """
+    if e.D == None and e.G == None:
+        for value in xa:# on parcourt la liste de couples
+            if e.val in value:# si jamais une variable correspond
+                e.val = value[1]# on change avec la valeur correpsondante
+    else:# si e n'est pas une feuille
+        e.G = replace_values(e.G, xa)# on fait de meme sur les enfants
         e.D = replace_values(e.D, xa)
     return e
 
-# A VERIFIER
-def eval_expression(e):
-    """calcule la valeur d'une expression. Les valeurs des noeuds sont des
-    constantes, non des variables"""
-    if e:
-        return value_of_expression(e, 0)
-    return 0
 
 # A VERIFIER
 def value_of_expression(e, v):
@@ -147,10 +135,10 @@ def main():
     treeDrawer.dessiner_arbre(t3)
     parcours_symetrique(t3)
     xa = [['a',1],['b', 2]]
-    t4 = replace_variable_by_value(t3, xa)
+    t4 = replace_values(t3, xa)
     parcours_symetrique(t4)
     treeDrawer.dessiner_arbre(t4)
-    print " = ", eval_expression(t4)
+    print " = ", value_of_expression(t4, 0)
     
     treeDrawer.wait()
 
