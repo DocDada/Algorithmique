@@ -37,7 +37,7 @@ def right_expr(t):
     """NE MARCHE PAS avec un and 3e if"""
     if t:# si l'arbre n'est pas vide
         if t.G == None and t.D == None:# si aucun fils
-            if t.val in oper or isinstance(t.val, str):# qu est ce qui n est pas valide ?
+            if isinstance(t.val, str):# qu est ce qui n est pas valide ?
                 return True
             return False
         elif t.val in oper:# s'il reste des fils
@@ -104,19 +104,31 @@ def replace_values(e, xa):
 
 
 # A VERIFIER
-def value_of_expression(e, v):
-    if e:
-        if e.val in oper:
-            if e.val == '+':
-                return v + value_of_expression(e.G, v) + value_of_expression(e.D, v)
-            elif e.val == '-':
-                return value_of_expression(e.G, v) - value_of_expression(e.D, v)
-            elif e.val == '*':
-                return value_of_expression(e.G, v) * value_of_expression(e.D, v)
-            elif e.val == '/':
-                return value_of_expression(e.G, v) / value_of_expression(e.D, v)
+def value_of_expression(e, value):
+    """on suppose que l'expression est sans variable
+    1/0 a exclure; 0**0 a exclure"""
+    if e.val in oper:# si c'est un operateur
+        op1 = value_of_expression(e.G, value)
+        op2 = value_of_expression(e.D, value)
+        if e.val == '+':
+            return value + op1 + op2
+        elif e.val == '-':
+            return value + op1 - op2
+        elif e.val == '*':
+            return value + (op1 * op2)
+        elif e.val == '**':
+            if op1 == 0 and op2 == 0:
+                raise Exception("0 puissance 0")
+            else:
+                return value + (op1 ** op2)
+        elif e.val == '/':
+            if op1 == 1 and op2 == 0:
+                raise Exception("Division par 0")
+            else:
+                return value + (op1 / op2)
+    else:# la valeur est une constante
         return int(e.val)
-    return v
+    return value
 
 
 
