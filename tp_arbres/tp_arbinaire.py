@@ -22,10 +22,22 @@ def has_double_knot(t):
             return False
     return False
 
+def has_double_knot_v2(t):
+    """renvoie un booleen indiquant si l'arbre ne contient que des noeuds
+    doubles'"""
+    if t:# si l'arbre n'est pas vide
+        if (t.G == None and t.D) or (t.G and t.D == None):
+            return False
+        elif t.G != None and t.D != None:# un seul fils ou aucun
+            return has_double_knot(t.G) and has_double_knot(t.D)
+    return True
+
+
 def right_expr(t):
+    """NE MARCHE PAS avec un and 3e if"""
     if t:# si l'arbre n'est pas vide
         if t.G == None and t.D == None:# si aucun fils
-            if t.val in oper and isinstance(t.val, str):# qu est ce qui n est pas valide ?
+            if t.val in oper or isinstance(t.val, str):# qu est ce qui n est pas valide ?
                 return True
             return False
         elif t.val in oper:# s'il reste des fils
@@ -33,7 +45,7 @@ def right_expr(t):
     return False
 
 def is_expr(t):
-    return has_double_knot(t) and right_expr(t)
+    return has_double_knot_v2(t) and right_expr(t)
 
 def parcours_profondeur(a):
     """parcours en profondeur d'un arbre
@@ -67,14 +79,15 @@ def parcours_suffixe(a):
         parcours_suffixe(a.D)
         print a.val,
 
+
 def tree_fusion_with_operand(e1, e2, op):
     """return a tree representing the expression e1 op e2"""
-    if op not in oper:
+    if op not in oper or not ((is_expr(e1) and is_expr(e2))):
         return None
-    e1_b = e1
-    e2_b = e2
-    return Arbre(op, e1_b, e2_b)
+    else:
+        return Arbre(op, e1, e2)
 
+# A VERIFIER
 def replace_variable_by_value(e, xa):
     """replace in the arithmetical expression the variables by their value
     listed in xa"""
@@ -83,6 +96,7 @@ def replace_variable_by_value(e, xa):
         return replace_values(e_b, xa)
     return e
 
+# A VERIFIER
 def replace_values(e, xa):
     if e:
         if e.val not in oper:
@@ -93,6 +107,7 @@ def replace_values(e, xa):
         e.D = replace_values(e.D, xa)
     return e
 
+# A VERIFIER
 def eval_expression(e):
     """calcule la valeur d'une expression. Les valeurs des noeuds sont des
     constantes, non des variables"""
@@ -100,6 +115,7 @@ def eval_expression(e):
         return value_of_expression(e, 0)
     return 0
 
+# A VERIFIER
 def value_of_expression(e, v):
     if e:
         if e.val in oper:
@@ -119,6 +135,7 @@ def value_of_expression(e, v):
 ################################################################################
 
 def main():
+    treeDrawer = TreeDrawer()
     t = entrerArbre(1)
     t2 = entrerArbre(1)
     #treeDrawer.dessiner_arbre(t)
@@ -127,11 +144,15 @@ def main():
     parcours_symetrique(t2)
     op = raw_input("\nEntrez l'operateur : ")
     t3 = tree_fusion_with_operand(t, t2, op)
+    treeDrawer.dessiner_arbre(t3)
     parcours_symetrique(t3)
     xa = [['a',1],['b', 2]]
     t4 = replace_variable_by_value(t3, xa)
     parcours_symetrique(t4)
+    treeDrawer.dessiner_arbre(t4)
     print " = ", eval_expression(t4)
+    
+    treeDrawer.wait()
 
 ################################################################################
 
