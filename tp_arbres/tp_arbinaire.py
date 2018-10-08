@@ -71,6 +71,18 @@ def parcours_symetrique(a):
         print a.val,
         parcours_symetrique(a.D)
 
+def parcours_symetrique_parentheses(a):
+    """parcours d'un arbre en ordre symetrique et ajoute des parentheses
+    non superflues"""
+    if a != None:
+        if a.val == '*' or a.val == '-' or a.val == '/':
+          print "(",
+        parcours_symetrique(a.G)
+        print a.val,
+        parcours_symetrique(a.D)
+        if a.val == '*' or a.val == '-' or a.val == '/':
+          print ")"
+
 
 def parcours_suffixe(a):
     """parcours d'un arbre en ordre suffixe"""
