@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from affiche_arbre import *
+#from affiche_arbre import *
 
 from saisie import *
 
@@ -72,16 +72,15 @@ def parcours_symetrique(a):
         parcours_symetrique(a.D)
 
 def parcours_symetrique_parentheses(a):
-    """parcours d'un arbre en ordre symetrique et ajoute des parentheses
-    non superflues"""
+    """parcours d'un arbre en ordre symetrique"""
     if a != None:
-        if a.val == '*' or a.val == '-' or a.val == '/':
-          print "(",
+        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
+            print "(",
         parcours_symetrique(a.G)
         print a.val,
         parcours_symetrique(a.D)
-        if a.val == '*' or a.val == '-' or a.val == '/':
-          print ")"
+        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
+            print ")"
 
 
 def parcours_suffixe(a):
@@ -142,31 +141,48 @@ def value_of_expression(e, value):
         return int(e.val)
     return value
 
+def derivative(t, x):
+    if t.val in oper:# si c'est un operateur
+        if t.val == '**' and t.G.val == x:
+            return Arbre('*', Arbre(t.D.val, None, None), Arbre(t.val, Arbre('x', None, None), Arbre(int(t.D.val) - 1, None, None)))
+        elif t.val == '*' and t.D.val == x:
+            return Arbre(t.G.val, None, None)
+        else:
+            return Arbre(t.val, derivative(t.G, x), derivative(t.D, x))
+    else:
+        if t.val == x:
+            return Arbre(1, None, None)
+        else:# la valeur est une constante
+            return Arbre(0, None, None)
+
 
 
 ################################################################################
 
 def main():
-    treeDrawer = TreeDrawer()
+    #treeDrawer = TreeDrawer()
     t = entrerArbre(1)
     t2 = entrerArbre(1)
     #treeDrawer.dessiner_arbre(t)
 
-    parcours_symetrique(t)
-    parcours_symetrique(t2)
+    parcours_symetrique_parentheses(t)
+    parcours_symetrique_parentheses(t2)
     op = raw_input("\nEntrez l'operateur : ")
     t3 = tree_fusion_with_operand(t, t2, op)
-    treeDrawer.dessiner_arbre(t3)
-    parcours_symetrique(t3)
+    #treeDrawer.dessiner_arbre(t3)
+    parcours_symetrique_parentheses(t3)
     xa = [['a',1],['b', 2]]
-    t4 = replace_values(t3, xa)
-    parcours_symetrique(t4)
-    treeDrawer.dessiner_arbre(t4)
-    print " = ", value_of_expression(t4, 0)
+    #t4 = replace_values(t3, xa)
+    t5 = derivative(t3, 'x')
+    parcours_symetrique_parentheses(t5)
+
+    #treeDrawer.dessiner_arbre(t4)
+    #print " = ", value_of_expression(t4, 0)
     
-    treeDrawer.wait()
+    #treeDrawer.wait()
 
 ################################################################################
 
 main()
+
 
