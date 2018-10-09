@@ -72,19 +72,29 @@ def parcours_symetrique(a):
         parcours_symetrique(a.D)
 
 def parcours_symetrique_parentheses(a):
-    """parcours d'un arbre en ordre symetrique"""
+    """parcours d'un arbre en ordre symetrique et affiche des parentheses
+    dans le cas ou l'operateur est un *, **, /, -
+    Exception dans le cas ou le fils est une operande (parentheses
+    superflues)"""
     if a != None:
         if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
-            print "(",
-        parcours_symetrique(a.G)
-        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
-            print ")",
-        print a.val,
-        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
-            print "(",
-        parcours_symetrique(a.D)
-        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
-            print ")"
+            if a.G in oper:
+                print "(",
+                parcours_symetrique(a.G)
+                print ")",
+            else:
+                parcours_symetrique(a.G)
+            print a.val,
+            if a.G in oper:
+                print "(",
+                parcours_symetrique(a.D)
+                print ")",
+            else:
+                parcours_symetrique(a.D)
+        else:
+            parcours_symetrique(a.G)
+            print a.val,
+            parcours_symetrique(a.D)
 
 
 def parcours_suffixe(a):
