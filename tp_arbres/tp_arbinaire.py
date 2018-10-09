@@ -77,7 +77,11 @@ def parcours_symetrique_parentheses(a):
         if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
             print "(",
         parcours_symetrique(a.G)
+        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
+            print ")",
         print a.val,
+        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
+            print "(",
         parcours_symetrique(a.D)
         if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
             print ")"
