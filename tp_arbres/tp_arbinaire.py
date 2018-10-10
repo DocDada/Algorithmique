@@ -11,8 +11,7 @@ oper = ['+', '-', '*', '/', '**', '%']
 ################################################################################
 
 def has_double_knot(t):
-    """renvoie un booleen indiquant si l'arbre ne contient que des noeuds
-    doubles'"""
+    """returns a boolean showing if a tree only contains double knots"""
     if t:# si l'arbre n'est pas vide
         if t.G == None and t.D == None:
             return True
@@ -23,21 +22,21 @@ def has_double_knot(t):
     return False
 
 def has_double_knot_v2(t):
-    """renvoie un booleen indiquant si l'arbre ne contient que des noeuds
-    doubles'"""
+    """returns a boolean showing if a tree only contains double knots
+    another version"""
     if t:# si l'arbre n'est pas vide
         if (t.G == None and t.D) or (t.G and t.D == None):
             return False
         elif t.G != None and t.D != None:# un seul fils ou aucun
-            return has_double_knot(t.G) and has_double_knot(t.D)
+            return has_double_knot_v2(t.G) and has_double_knot_v2(t.D)
     return True
 
 
 def right_expr(t):
-    """NE MARCHE PAS avec un and 3e if"""
+    """checks if the value of the knot is an operator if the knot is not a leaf"""
     if t:# si l'arbre n'est pas vide
         if t.G == None and t.D == None:# si aucun fils
-            if isinstance(t.val, str):# qu est ce qui n est pas valide ?
+            if t.val not in oper:# qu est ce qui n est pas valide ?
                 return True
             return False
         elif t.val in oper:# s'il reste des fils
@@ -79,16 +78,16 @@ def parcours_sym_parenth(t):
     if t:
         if t.val == '*' or t.val == '-' or t.val == '/' or t.val == '**':
             if t.G.val in oper:
-                string += "("+parcours_sym_parenth(t.G)+") "
+                string += "(" + parcours_sym_parenth(t.G) + ")"
             else:
-                string += parcours_sym_parenth(t.G)+ " "
-            string += t.val
+                string += parcours_sym_parenth(t.G)
+            string += " " + t.val + " "
             if t.D.val in oper:
-                string += " ("+parcours_sym_parenth(t.D)+")"
+                string += "(" + parcours_sym_parenth(t.D) + ")"
             else:
-                string += " " + parcours_sym_parenth(t.D)
+                string += parcours_sym_parenth(t.D)
         else:
-            string += parcours_sym_parenth(t.G)+t.val+parcours_sym_parenth(t.D)
+            string += parcours_sym_parenth(t.G)+" "+str(t.val)+" "+parcours_sym_parenth(t.D)
     return string
 
 
@@ -151,9 +150,10 @@ def value_of_expression(e, value):
         return int(e.val)
     return value
 
+# A VERIFIER
 def derivative(t, x):
     """returns the derivative of an expression"""
-    if t.val in oper:# si c'est un operateur
+    if t.val in oper:# if it is an operator
         if t.val == '**' and t.G.val == x:
             return Arbre('*', Arbre(t.D.val, None, None), Arbre(t.val, Arbre('x', None, None), Arbre(int(t.D.val) - 1, None, None)))
         elif t.val == '*' and t.D.val == x:
@@ -163,8 +163,38 @@ def derivative(t, x):
     else:
         if t.val == x:
             return Arbre(1, None, None)
-        else:# la valeur est une constante
+        else:# value is a constant
             return Arbre(0, None, None)
+
+# A VERIFIER
+def simplification(e, x):
+    if e.val in oper:# si c'est un operateur
+        op1 = value_of_expression(e.G, value)
+        op2 = value_of_expression(e.D, value)
+        if op1 == x or op2 == x:
+            return value
+        if e.val == '+':
+            return Arbre(str(op1 + op2), None, None)
+        elif e.val == '-':
+            return Arbre(str(op1 - op2), None, None)
+        elif e.val == '*':
+            return Arbre(str(op1 * op2), None, None)
+        elif e.val == '**':
+            if op1 == 0 and op2 == 0:
+                raise Exception("0 puissance 0")
+            else:
+                return Arbre(str(op1 ** op2), None, None)
+        elif e.val == '/':
+            if op1 == 1 and op2 == 0:
+                raise Exception("Division par 0")
+            else:
+                return value + (op1 / op2)
+    else:# la valeur est une constante
+        if e.val == x:
+            return x
+        else:
+            return int(e.val)
+    return value
 
 
 
@@ -193,27 +223,40 @@ def main():
     #treeDrawer.wait()
 
 def main2():
-    #treeDrawer = TreeDrawer()
+    treeDrawer = TreeDrawer()
     t = entrerArbre(1)
 
     print print_expression(t)
-    #parcours_symetrique_parentheses(t)
 
+    treeDrawer.dessiner_arbre(t)
 
-    #treeDrawer.dessiner_arbre(t)
-    #parcours_symetrique_parentheses(t)
     v = value_of_expression(t, 0)
     print "VALUE : ", v
 
-    #treeDrawer.wait()
+    treeDrawer.wait()
+
+
+
+def main3():
+    treeDrawer = TreeDrawer()
+    t = entrerArbre(1)
+
+    print print_expression(t)
+    treeDrawer.dessiner_arbre(t)
+
+    t2 = derivative(t, 'x')
+
+    print print_expression(t2)
+    treeDrawer.dessiner_arbre(t2)
+
+    treeDrawer.wait()
 
 
 ################################################################################
 
 #main()
 
-main2()
+#main2()
 
-
-
+main3()
 
