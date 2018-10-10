@@ -1,6 +1,6 @@
 # coding: utf-8
 
-#from affiche_arbre import *
+from affiche_arbre import *
 
 from saisie import *
 
@@ -71,30 +71,26 @@ def parcours_symetrique(a):
         print a.val,
         parcours_symetrique(a.D)
 
-def parcours_symetrique_parentheses(a):
-    """parcours d'un arbre en ordre symetrique et affiche des parentheses
-    dans le cas ou l'operateur est un *, **, /, -
-    Exception dans le cas ou le fils est une operande (parentheses
-    superflues)"""
-    if a != None:
-        if a.val == '*' or a.val == '-' or a.val == '/' or a.val == '**':
-            if a.G in oper:
-                print "(",
-                parcours_symetrique(a.G)
-                print ")",
+def print_expression(t):
+    return parcours_sym_parenth(t)+"\n"
+
+def parcours_sym_parenth(t):
+    string = ""
+    if t:
+        if t.val == '*' or t.val == '-' or t.val == '/' or t.val == '**':
+            if t.G.val in oper:
+                string += "("+parcours_sym_parenth(t.G)+") "
             else:
-                parcours_symetrique(a.G)
-            print a.val,
-            if a.G in oper:
-                print "(",
-                parcours_symetrique(a.D)
-                print ")",
+                string += parcours_sym_parenth(t.G)+ " "
+            string += t.val
+            if t.D.val in oper:
+                string += " ("+parcours_sym_parenth(t.D)+")"
             else:
-                parcours_symetrique(a.D)
+                string += " " + parcours_sym_parenth(t.D)
         else:
-            parcours_symetrique(a.G)
-            print a.val,
-            parcours_symetrique(a.D)
+            string += parcours_sym_parenth(t.G)+t.val+parcours_sym_parenth(t.D)
+    return string
+
 
 
 def parcours_suffixe(a):
@@ -156,6 +152,7 @@ def value_of_expression(e, value):
     return value
 
 def derivative(t, x):
+    """returns the derivative of an expression"""
     if t.val in oper:# si c'est un operateur
         if t.val == '**' and t.G.val == x:
             return Arbre('*', Arbre(t.D.val, None, None), Arbre(t.val, Arbre('x', None, None), Arbre(int(t.D.val) - 1, None, None)))
@@ -195,8 +192,28 @@ def main():
     
     #treeDrawer.wait()
 
+def main2():
+    #treeDrawer = TreeDrawer()
+    t = entrerArbre(1)
+
+    print print_expression(t)
+    #parcours_symetrique_parentheses(t)
+
+
+    #treeDrawer.dessiner_arbre(t)
+    #parcours_symetrique_parentheses(t)
+    v = value_of_expression(t, 0)
+    print "VALUE : ", v
+
+    #treeDrawer.wait()
+
+
 ################################################################################
 
-main()
+#main()
+
+main2()
+
+
 
 
