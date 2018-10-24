@@ -58,11 +58,11 @@ def insert_leaf(bst, x):
             bst.D = insert_leaf(bst.D, x)
     return bst
 
-# marche psa
 def insert_leaf_v2(bst, x):
     courant = bst
     temp = courant
     while courant:
+        parcours_prefixe(temp)
         temp = courant
         if courant.val >= x:
             courant = courant.G
@@ -72,7 +72,7 @@ def insert_leaf_v2(bst, x):
         temp.G = create_leaf(x)
     else:
         temp.D = create_leaf(x)
-    return temp
+    return bst
 
 
 def create_leaf(x):
@@ -154,6 +154,24 @@ def delete(bst, x):
             bst.D = delete(bst.D, x)
         return bst
 
+def delete_v2(bst, x):
+    """deletes an element x from a bst
+    iterative version"""
+    courant = bst
+    temp = courant
+    while courant:
+        temp = courant
+        if courant.val < x:
+            courant = courant.D
+        else:
+            courant = courant.G
+    if courant:
+        if temp.val < x:
+            temp.D = delete_root(courant)
+        else:
+            temp.G = delete_root(courant)
+    return bst
+
 
 def delete_root(bst):
     if bst.G == None:
@@ -179,7 +197,7 @@ def delete_root(bst):
 def main():
     treeDrawer = TreeDrawer()
     #bst = input_bst()
-    liste = [1,2,4,5,0,3,4,1,9,3,2]
+    liste = [1,2,4,5,0,3,3,2]
     bst = create_bst(liste)
     #parcours_prefixe(bst)
     treeDrawer.dessiner_arbre(bst)
@@ -199,10 +217,10 @@ def main():
     ascending_order(bst)
     print "SECONDE CLEF PLUS GRANDE : ", second_key(bst)
     #
-    bst = insert_leaf(bst, int(raw_input("ENTER A NUMBER : ")))
+    bst = insert_leaf_v2(bst, int(raw_input("ENTER A NUMBER : ")))
     treeDrawer.dessiner_arbre(bst)
     #
-    bst = delete(bst, int(raw_input("ENTER A NUMBER : ")))
+    bst = delete_v2(bst, int(raw_input("ENTER A NUMBER : ")))
     #
     treeDrawer.dessiner_arbre(bst)
     treeDrawer.wait()
