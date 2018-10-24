@@ -58,6 +58,22 @@ def insert_leaf(bst, x):
             bst.D = insert_leaf(bst.D, x)
     return bst
 
+# marche psa
+def insert_leaf_v2(bst, x):
+    courant = bst
+    temp = courant
+    while courant:
+        temp = courant
+        if courant.val >= x:
+            courant = courant.G
+        else:
+            courant = courant.D
+    if temp.val >= x:
+        temp.G = create_leaf(x)
+    else:
+        temp.D = create_leaf(x)
+    return temp
+
 
 def create_leaf(x):
     return Arbre(x, None, None)
@@ -116,6 +132,15 @@ def occurence(bst, x):
     else:
         return 0
 
+def interval(bst, x, y):
+    if bst:
+        if bst.val >= x and bst.val < y:
+            return 1 + interval(bst.G, x, y) + interval(bst.D, x, y)
+        else:
+            return interval(bst.G, x, y) + interval(bst.D, x, y)
+    else:
+        return 0
+
 def delete(bst, x):
     """deletes an element x from a bst"""
     if bst == None:
@@ -158,17 +183,27 @@ def main():
     bst = create_bst(liste)
     #parcours_prefixe(bst)
     treeDrawer.dessiner_arbre(bst)
+    #
     search(bst, 2)
     search_v2(bst, 2)
+    #
     a, p = search_depth(bst, 2, 0)
     print "PROFONDEUR : ", p
+    #
     occ = occurence(bst, 2)
     print "OCCURENCE : ", occ
+    #
+    n = interval(bst, 3, 5)
+    print "INTERVAL = ", n
+    #
     ascending_order(bst)
     print "SECONDE CLEF PLUS GRANDE : ", second_key(bst)
+    #
     bst = insert_leaf(bst, int(raw_input("ENTER A NUMBER : ")))
     treeDrawer.dessiner_arbre(bst)
+    #
     bst = delete(bst, int(raw_input("ENTER A NUMBER : ")))
+    #
     treeDrawer.dessiner_arbre(bst)
     treeDrawer.wait()
 
