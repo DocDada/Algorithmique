@@ -166,36 +166,6 @@ def derivative(t, x):
         else:# value is a constant
             return Arbre(0, None, None)
 
-# A VERIFIER
-def simplification(e, x):
-    if e.val in oper:# si c'est un operateur
-        op1 = value_of_expression(e.G, value)
-        op2 = value_of_expression(e.D, value)
-        if op1 == x or op2 == x:
-            return value
-        if e.val == '+':
-            return Arbre(str(op1 + op2), None, None)
-        elif e.val == '-':
-            return Arbre(str(op1 - op2), None, None)
-        elif e.val == '*':
-            return Arbre(str(op1 * op2), None, None)
-        elif e.val == '**':
-            if op1 == 0 and op2 == 0:
-                raise Exception("0 puissance 0")
-            else:
-                return Arbre(str(op1 ** op2), None, None)
-        elif e.val == '/':
-            if op1 == 1 and op2 == 0:
-                raise Exception("Division par 0")
-            else:
-                return value + (op1 / op2)
-    else:# la valeur est une constante
-        if e.val == x:
-            return x
-        else:
-            return int(e.val)
-    return value
-
 
 
 ################################################################################
